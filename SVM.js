@@ -34,7 +34,7 @@ export async function load_SVM_Model() {
     const scalerData = await loadBinaryFile(`./models/${modelName}/scaler_${modelName}.pkl`);
 
     // 加載標籤數據，這裡假設它是文本文件，按行分割
-    const response = await fetch(`/models/${modelName}/labels.txt`);
+    const response = await fetch(`./models/${modelName}/labels.txt`);
     const labelText = await response.text();
     const labelData = labelText.split('\n').map(line => line.trim());
 
