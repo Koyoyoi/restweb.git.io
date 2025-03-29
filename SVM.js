@@ -30,8 +30,8 @@ export async function load_SVM_Model() {
     const modelName = 'numberPos';
 
     // 加載模型和標準化器文件
-    const modelData = await loadBinaryFile(`/models/${modelName}/svm_${modelName}_model.pkl`);
-    const scalerData = await loadBinaryFile(`/models/${modelName}/scaler_${modelName}.pkl`);
+    const modelData = await loadBinaryFile(`./models/${modelName}/svm_${modelName}_model.pkl`);
+    const scalerData = await loadBinaryFile(`./models/${modelName}/scaler_${modelName}.pkl`);
 
     // 加載標籤數據，這裡假設它是文本文件，按行分割
     const response = await fetch(`/models/${modelName}/labels.txt`);
