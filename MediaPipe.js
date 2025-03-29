@@ -1,9 +1,11 @@
 import { HandLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest";
 import { compute, fingerPlay } from "./handCompute.js";
+import { load_SVM_Model, predict } from "./SVM.js"
 
 // 宣告全域變數
 let video, canvas, ctx, handLandmarker, drawingUtils;
 let handData = { "Left": [], "Right": [] };
+let gesture = '', prevGesture = ''
 
 // 設置攝影機並取得影像流
 async function setupCamera() {
@@ -57,6 +59,16 @@ async function detectHands() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // 如果偵測到手部標誌點，則繪製標記
+    if (results.landmarks) {
+        for (const landmarks of results.landmarks) {
+            // 畫出手部關節連線
+            drawingUtils.drawConnectors(landmarks, HandLandmarker.HAND_CONNECTIONS, { color: "green", lineWidth: 3 });
+            // 畫出手指關鍵點
+            drawingUtils.drawLandmarks(landmarks, { color: "red", radius: 5 });
+        }
+    }
+
     const landmarks = results.landmarks;
     const handednesses = results.handednesses;
 
@@ -69,11 +81,17 @@ async function detectHands() {
         }
         handData[left_or_right] = points;
     }
-
+    
+    // Left Hand
     if (handData['Left'].length !== 0) {
         let parameters = compute(handData['Left']);
-        console.log(parameters);
-        // 在此處進行手勢預測（可選）
+        // 手勢預測
+        gesture = await predict(parameters)
+        if (prevGesture != gesture) {
+            console.log(gesture)
+            prevGesture = gesture
+        }
+
     }
 
     handData['Left'].length = 0;
@@ -86,6 +104,7 @@ async function detectHands() {
 async function main() {
     await setupCamera(); // 啟動攝影機
     await setupHandLandmarker(); // 載入手部偵測模型
+    await load_SVM_Model();
     setupCanvas(); // 設置畫布
     detectHands(); // 啟動手部偵測
 }
