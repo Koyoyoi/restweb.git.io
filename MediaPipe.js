@@ -1,6 +1,6 @@
 import { HandLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest";
-import { compute, fingerPlay } from "/handCompute.js";
-import { load_SVM_Model, predict } from "/SVM.js"
+import { compute, fingerPlay } from "./handCompute.js";
+import { load_SVM_Model, predict } from "./SVM.js"
 
 // 宣告全域變數
 let video, canvas, ctx, handLandmarker, drawingUtils;
